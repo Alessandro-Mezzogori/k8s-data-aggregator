@@ -1,0 +1,11 @@
+version: '3.9'
+  
+services:
+  test-worker:
+    container_name: worker-test-worker
+    image: worker-test-work:1.0.0
+    build: .
+    ports:
+      - 3000:3000
+      
+    

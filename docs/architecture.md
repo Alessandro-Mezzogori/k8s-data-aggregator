@@ -1,0 +1,1 @@
+![](architecture.m\3524e121-f288-be1f-9a4b-024c62ded8b8.svg)

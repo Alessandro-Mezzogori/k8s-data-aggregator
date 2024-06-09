@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: foo-bar-service
+spec: 
+  type: LoadBalancer
+  selector:
+    svc: foo-bar
+  ports:
+  - port: 80
+    
+# in k8s bare metal non é fornito un load balancer
+# metallb é un load balancer per bare metal open source 
+# - Crea namespace MetalLB
+# kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/namespace.yaml
+# - Applica il manifesto di metallb
+# kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/metallb.yaml

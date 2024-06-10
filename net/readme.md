@@ -28,19 +28,3 @@
     ```shell
     kubectl apply -f <folder> 
     ```
-    
-# Nel nostro caso
-```shell
-# From workspace root folder
-docker build -t test-worker-express:1.0.0 .\net\workers\test-worker\
-kind create cluster --config .\net\kind-config.yaml
-kind load docker-image test-worker-express:1.0.0
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/namespace.yaml
-
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/metallb.yaml
-
-kubectl apply -f .\net\k8s\
-```

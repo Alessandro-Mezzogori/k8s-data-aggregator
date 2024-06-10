@@ -1,0 +1,38 @@
+kind: Deployment
+apiVersion: apps/v1
+# name of the deployment
+metadata:
+  name: bar-app-deploy
+spec:
+  replicas: 1
+  # selector.matchLabels identifies the container, if there is a match
+  # it treats it as the same container
+  # example: two deployments with same match label will overwrite the pod container
+  selector:
+    matchLabels:
+      app: bar-app-container
+  template:
+    metadata:
+      labels:
+        app: bar-app-container
+        svc: foo-bar
+    spec: 
+      containers:
+        - name: bar-app-container
+          image: test-worker-express:1.0.0
+          ports:
+            - containerPort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: bar-service
+spec:
+  selector:
+    app: bar-app-container
+  ports:
+  - port: 80
+
+# docker build -t test-worker-express:<version>
+# kind load docker-image test-worker-express:<version>
+    

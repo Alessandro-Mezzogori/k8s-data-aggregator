@@ -38,13 +38,36 @@ if($LASTEXITCODE -ne 0){
 }
 
 # Apply external configurations and namespaces
-# Could fail if no internet access, TODO download file offline 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml 
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/namespace.yaml
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/metallb.yaml
+kubectl apply -f .\net\k8s\external\
 
-# Sleep to avoid timeout ( ingress-nginx has a timeout of 10 seconds from last request/download )
-Start-Sleep -Seconds 15
+# Rabbitmq
+kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
 
 # Apply internal configurations 
 kubectl apply -f .\net\k8s\
+
+# Interazione con RabbitMQ
+# 
+# $username = kubectl get secret rabbitmq-cluster-default-user -o jsonpath='{.data.username}'
+# $username = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($username))
+# $username
+# 
+# $password = kubectl get secret rabbitmq-cluster-default-user -o jsonpath='{.data.password}'
+# $password = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($password))
+# $password
+#
+# $service = kubectl get service rabbitmq-cluster  -o jsonpath='{.spec.clusterIP}'
+# $service
+#
+# Write-Host $username $password => default_user_TV9CNWAcxBd__Tk3zFr WBRyv_inlf8oVjUa6RNB2zmb8sAHJjn6
+# kubectl port-forward "service/rabbitmq-cluster" 15672
+# 
+# PERF TEST
+# kubectl run perf-test --image=pivotalrabbitmq/perf-test -- --uri "amqp://$($username):$($password)@$($service)"
+# kubectl logs --follow perf-test
+# Results: 
+# - id: test-211846-048, time 10.000 s, sent: 85244 msg/s, received: 81331 msg/s, min/median/75th/95th/99th consumer latency: 362469/426001/442659/461815/468588 µs
+# - id: test-211846-048, time 11.000 s, sent: 77983 msg/s, received: 80102 msg/s, min/median/75th/95th/99th consumer latency: 371835/431564/448368/464575/470368 µs
+# - id: test-211846-048, time 12.000 s, sent: 78788 msg/s, received: 78178 msg/s, min/median/75th/95th/99th consumer latency: 361566/433624/452841/472158/480461 µs
+# kubectl delete pod perf-tests
+

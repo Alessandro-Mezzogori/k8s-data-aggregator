@@ -22,6 +22,30 @@ spec:
           image: test-worker-express:1.0.0
           ports:
             - containerPort: 80
+          env:
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: username
+            - name: RABBITMQ_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: host
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: password
+            - name: RABBITMQ_CONF
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: default_user.conf
+            - name: RABBITMQ_NAME
+              value: rabbitmq-cluster-server-0
+            
 ---
 kind: Service
 apiVersion: v1

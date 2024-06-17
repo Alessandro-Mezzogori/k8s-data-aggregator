@@ -37,6 +37,21 @@ if($LASTEXITCODE -ne 0){
     exit -1;
 }
 
+# Steps
+# 1. istioctl install -f ...no-gateway.yaml -y
+# 2. kubectl label namespace default istio-injection=enabled
+# 
+
+$gatewayCRD = kubectl get crd gateways.gateway.networking.k8s.io;
+if($gatewayCRD -eq ''){
+    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+    # kubectl delete -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+    
+    # Quando uscirá il supporto di istio / qualche altro provider per UDPRoute / TCPRoute
+    # kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/experimental-install.yaml
+}
+
+
 # Apply external configurations and namespaces
 kubectl apply -f .\net\k8s\external\
 
@@ -45,6 +60,9 @@ kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/d
 
 # Apply internal configurations 
 kubectl apply -f .\net\k8s\
+
+# Apply internal configurations 
+kubectl apply -f .\net\k8s\gateway
 
 # Interazione con RabbitMQ
 # 
@@ -70,4 +88,8 @@ kubectl apply -f .\net\k8s\
 # - id: test-211846-048, time 11.000 s, sent: 77983 msg/s, received: 80102 msg/s, min/median/75th/95th/99th consumer latency: 371835/431564/448368/464575/470368 µs
 # - id: test-211846-048, time 12.000 s, sent: 78788 msg/s, received: 78178 msg/s, min/median/75th/95th/99th consumer latency: 361566/433624/452841/472158/480461 µs
 # kubectl delete pod perf-tests
+
+
+# nginx ingress controller
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 

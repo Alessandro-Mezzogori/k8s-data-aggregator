@@ -35,4 +35,5 @@ spec:
     app: foo
   ports:
   - port: 80
+    name: http
     

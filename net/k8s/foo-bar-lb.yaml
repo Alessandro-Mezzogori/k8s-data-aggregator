@@ -8,6 +8,7 @@ spec:
     svc: foo-bar
   ports:
   - port: 80
+    name: http
     
 # in k8s bare metal non é fornito un load balancer
 # metallb é un load balancer per bare metal open source 

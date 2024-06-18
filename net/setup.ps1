@@ -37,18 +37,25 @@ if($LASTEXITCODE -ne 0){
     exit -1;
 }
 
-# Steps
+# ISTIO - Steps 
 # 1. istioctl install -f ...no-gateway.yaml -y
 # 2. kubectl label namespace default istio-injection=enabled
 # 
 
+# Traefik - Steps
+# helm repo add traefik https://traefik.github.io/charts
+# helm repo update
+# helm install traefik traefik/traefik
+# helm upgrade traefik -f ./net/k8s/gateway/traefik.yaml traefik/traefik
+# 
+
 $gatewayCRD = kubectl get crd gateways.gateway.networking.k8s.io;
 if($gatewayCRD -eq ''){
-    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+    # kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
     # kubectl delete -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
     
     # Quando uscirá il supporto di istio / qualche altro provider per UDPRoute / TCPRoute
-    # kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/experimental-install.yaml
+    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/experimental-install.yaml
 }
 
 
@@ -93,3 +100,4 @@ kubectl apply -f .\net\k8s\gateway
 # nginx ingress controller
 # kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
+# kubectl port-forward $(kubectl get pods --selector "app.kubernetes.io/name=traefik" --output=name) 9000:9000
